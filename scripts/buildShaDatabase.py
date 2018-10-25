@@ -1,17 +1,24 @@
-import hashlib
-import shutil
 import sys
+import hashlib
+import pickle
 
-f = open('english3.txt', 'r')
+
+# save_obj takes in the dictionary obj and name of the file to store it.
+# Currently the name is set from the argument of the file name
+def save_obj(obj, name ):
+    with open('obj/'+ name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+f = open(sys.argv[1], 'r') #file to read in will be second argument
 fl = f.readlines()
-dict = {'key':'value'}
+dict = {'key':'value'} #set up dictionary var
 
+# Sha256 each value and store in dict var
 for line in fl:
     value = hashlib.sha256(line.strip()).hexdigest()
     dict[value] = str(line)
 
-    #print(line.strip() + "," + hashlib.sha256(line).hexdigest())
+# Save the sha256 dict as an object
+save_obj(dict, sys.argv[1])
 
-val = dict['1ef0c38962cccad837151fba6e70257fc999c6987693a8f12d9db38936109018']
-print ("dict['1ef0c38962cccad837151fba6e70257fc999c6987693a8f12d9db38936109018']: " + val)
 f.close()
