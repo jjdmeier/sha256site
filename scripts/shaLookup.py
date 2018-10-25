@@ -10,12 +10,16 @@ def load_obj(name):
     with open('obj/' + name, 'rb') as f:
         return pickle.load(f)
 
+found = False
+
 # loop through dictionary objects and check for sha
 for name in os.listdir('obj/'):
     if name.endswith('.pkl'):
         dictObj = load_obj(name)
         if shaValue in dictObj.keys():
             print("\nReversed: " + dictObj[shaValue])
+            found = True
             break
-        else:
-            print("Not in: " + name)
+
+if found == False:
+    print("Value is not present in database")
