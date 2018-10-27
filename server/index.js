@@ -4,9 +4,6 @@ const fs = require('fs');
 const express = require('express')
 const session = require('express-session')
 var sleep = require('sleep');
-
-
-//new
 SHA256 = require('sha256');
 var zxcvbn = require('zxcvbn');
 
@@ -50,6 +47,8 @@ app.get('/', (req, res) => {
 	return res.send('Hello World!')
 });
 
+let working = false;
+
 app.post('/sha256',(req,res)=>{
 
 	console.log("in /sha256\n");
@@ -57,19 +56,24 @@ app.post('/sha256',(req,res)=>{
 	const pythonProcess = spawn('python',["../scripts/shaLookup.py", req.body.sha256]);
 	pythonReturn = null;
 
-	pythonProcess.stdout.on('data', (data) => {
-		let message = JSON.stringify(`${data}`);
-		let remove = message.replace(/"/g, '')
-		let splitmessage = remove.replace(/\\n/g, '');
-		console.log(splitmessage);
-		res.redirect(302, 'login.html#' + splitmessage);
-	  });
+	if(working == false){
+		working = true;
 
-	pythonProcess.stderr.on('data', (data) => {
-		console.log(`stderr: ${data}`);
-		res.redirect(302, 'login.html#Error Occurred');
-	  });
-	  
+		pythonProcess.stdout.on('data', (data) => {
+			let message = JSON.stringify(`${data}`);
+			let remove = message.replace(/"/g, '')
+			let finalMessage = remove.replace(/\\n/g, '');
+			console.log(finalMessage);
+			res.redirect(302, 'login.html#' + finalMessage);
+			working = false;
+		});
+
+		pythonProcess.stderr.on('data', (data) => {
+			console.log(`stderr: ${data}`);
+			res.redirect(302, 'login.html#Error Occurred');
+			working = false;
+		});
+	}
 
 })
 
