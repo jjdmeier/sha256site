@@ -19,6 +19,7 @@ const port = 3000
 //setup the filepath to read and write DB to
 const dbFilePath = 'db/database.json'
 
+
 //lets load our database into memory
 let db;
 try{
@@ -64,13 +65,13 @@ app.post('/sha256',(req,res)=>{
 			let remove = message.replace(/"/g, '')
 			let finalMessage = remove.replace(/\\n/g, '');
 			console.log(finalMessage);
-			res.redirect(302, 'login.html#' + finalMessage);
+			res.redirect(302, 'sha256.html#' + finalMessage);
 			working = false;
 		});
 
 		pythonProcess.stderr.on('data', (data) => {
 			console.log(`stderr: ${data}`);
-			res.redirect(302, 'login.html#Error Occurred');
+			res.redirect(302, 'sha256.html#Error Occurred');
 			working = false;
 		});
 	}
@@ -79,4 +80,4 @@ app.post('/sha256',(req,res)=>{
 
 app.use(express.static('static'))
 
-app.listen(port, () => console.log(`Project 4 listening on port ${port}!`))
+app.listen(port, () => console.log(`Running SHA 256 Server on ${port}!`))
